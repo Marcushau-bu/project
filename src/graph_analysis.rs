@@ -59,8 +59,8 @@ pub fn compute_average_degree_centrality_for_nodes_with_neighbours(
     average_degrees
 }
 
-pub fn category_recommendation_likelihood(graph: &HashMap<String, Vec<String>>, node_info: &HashMap<String, (String, String)>) -> HashMap<String, f64> {
-    let mut category_recommendation_likelihoods: HashMap<String, f64> = HashMap::new();
+pub fn category_purchasing_likelihood(graph: &HashMap<String, Vec<String>>, node_info: &HashMap<String, (String, String)>) -> HashMap<String, f64> {
+    let mut category_purchasing_likelihoods: HashMap<String, f64> = HashMap::new();
 
     // HashMap to store the count of nodes in each category
     let mut category_node_counts: HashMap<String, usize> = HashMap::new();
@@ -87,30 +87,30 @@ pub fn category_recommendation_likelihood(graph: &HashMap<String, Vec<String>>, 
 
             // Increment the likelihood for the current category if it occurs in the neighbors' categories
             if neighbor_categories.contains(category) {
-                let likelihood = category_recommendation_likelihoods.entry(category.clone()).or_insert(0.0);
+                let likelihood = category_purchasing_likelihoods.entry(category.clone()).or_insert(0.0);
                 *likelihood += 1.0;
             }
         }
     }
 
     // Calculate the likelihood for each category
-    for (category, count) in category_recommendation_likelihoods.iter_mut() {
+    for (category, count) in category_purchasing_likelihoods.iter_mut() {
         if let Some(node_count) = category_node_counts.get(category) {
             *count /= *node_count as f64;
         }
     }
 
-    category_recommendation_likelihoods
+    category_purchasing_likelihoods
 }
 
-pub fn average_recommendation_per_category(
+pub fn average_co_purchases_per_category(
     graph: &HashMap<String, Vec<String>>, 
     node_info: &HashMap<String, (String, String)>
 ) -> HashMap<String, HashMap<String, f64>> {
     let mut category_counts: HashMap<String, HashMap<String, usize>> = HashMap::new();
     let mut category_totals: HashMap<String, usize> = HashMap::new();
 
-    // Step 1: Collect recommendations for each node.
+    // Collect recommendations for each node.
     for (node, neighbors) in graph.iter() {
         if let Some((_, node_category)) = node_info.get(node) {
             let counts = category_counts.entry(node_category.clone()).or_insert_with(HashMap::new);
@@ -123,7 +123,7 @@ pub fn average_recommendation_per_category(
         }
     }
 
-    // Step 2: Compute averages for each category.
+    // Compute averages for each category.
     let mut averages: HashMap<String, HashMap<String, f64>> = HashMap::new();
     for (category, counts) in category_counts {
         let total_nodes = category_totals.get(&category).unwrap_or(&1); // Avoid division by zero

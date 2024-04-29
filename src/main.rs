@@ -11,8 +11,7 @@ fn main() -> io::Result<()>  {
         // Extract each node (products) corresponding item category and name.
         let node_dictionary = data_processing::node_information("data/amazon-meta.txt")?;
         
-
-        // Count the total number of item categories there are 
+        // Count the total number of item  in each categories  
         let category_counts = data_processing::count_items_by_category(&node_dictionary);
         // Print out counts for each category
         println!("Categories");
@@ -33,7 +32,7 @@ fn main() -> io::Result<()>  {
             new_node_dictionary.insert(node.clone(), node_dictionary[node].clone());
         }
         
-        // Print out average degree centrality for each category for all nodes
+        // Calculate the average degree centrality for each category for all nodes
         println!("Avg Degree Centrality for each category");
         let average_degree_centrality_allnodes = graph_analysis::compute_average_degree_centrality_all_nodes(&new_graph, &new_node_dictionary);
         for (category, avg_degree) in average_degree_centrality_allnodes.iter() {
@@ -41,7 +40,7 @@ fn main() -> io::Result<()>  {
         }
         println!("\n");
 
-        // Print out average degree centrality for each category for only nodes with neighbors
+        // Calculate the average degree centrality for each category for only nodes with neighbors
         println!("Avg Degree Centrality for each category based only on nodes with neighbours");
         let average_degree_centrality_for_nodes_with_neighbours = graph_analysis::compute_average_degree_centrality_for_nodes_with_neighbours(&new_graph, &new_node_dictionary);
         for (category, avg_degree) in average_degree_centrality_for_nodes_with_neighbours.iter() {
@@ -50,20 +49,20 @@ fn main() -> io::Result<()>  {
         println!("\n");
 
         // Calculate the likelihood of someone purchasing a product of the same category for each category 
-        let category_likelihood = graph_analysis::category_recommendation_likelihood(&graph, &node_dictionary);
-        println!("Likelihood of each category recommending its own category:");
+        let category_likelihood = graph_analysis::category_purchasing_likelihood(&graph, &node_dictionary);
+        println!("Likelihood of each category purchasing another product of its own category:");
         for (category, likelihood) in category_likelihood.iter() {
             println!("Category: {} - Likelihood: {}", category, likelihood);
         }
         println!("\n");
 
         // The average number of other items in each category a person purcahses along their initial item
-        let average_recommendations = graph_analysis::average_recommendation_per_category(&graph, &node_dictionary);
-        println!("Average Recommendations per Category:");
-        for (category, avg_recs) in average_recommendations.iter() {
+        let average_co_purcahses = graph_analysis::average_co_purchases_per_category(&graph, &node_dictionary);
+        println!("Average product category co-purchases per Category:");
+        for (category, avg_recs) in average_co_purcahses.iter() {
             println!("Category: {}", category);
             for (rec_category, avg) in avg_recs.iter() {
-                println!("  Recommends {}: {:.2}", rec_category, avg);
+                println!("  Co-purchases {}: {:.2}", rec_category, avg);
             }
         }
         println!("\n");
