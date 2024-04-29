@@ -58,3 +58,47 @@ pub fn compute_average_degree_centrality_for_nodes_with_neighbours(
 
     average_degrees
 }
+
+pub fn category_recommendation_likelihood(graph: &HashMap<String, Vec<String>>, node_info: &HashMap<String, (String, String)>) -> HashMap<String, f64> {
+    let mut category_recommendation_likelihoods: HashMap<String, f64> = HashMap::new();
+
+    // HashMap to store the count of nodes in each category
+    let mut category_node_counts: HashMap<String, usize> = HashMap::new();
+
+    // Iterate through each node in the graph
+    for (node, neighbors) in graph.iter() {
+        // Get the category of the current node
+        if let Some((_, category)) = node_info.get(node) {
+            // Increment the count of nodes in the current category
+            let count = category_node_counts.entry(category.clone()).or_insert(0);
+            *count += 1;
+
+            // Create a HashSet to store the neighbors' categories
+            let mut neighbor_categories: HashSet<String> = HashSet::new();
+            
+            // Iterate through each neighbor of the current node
+            for neighbor in neighbors {
+                // Get the category of the neighbor node
+                if let Some((_, neighbor_category)) = node_info.get(neighbor) {
+                    // Add the neighbor's category to the HashSet
+                    neighbor_categories.insert(neighbor_category.clone());
+                }
+            }
+
+            // Increment the likelihood for the current category if it occurs in the neighbors' categories
+            if neighbor_categories.contains(category) {
+                let likelihood = category_recommendation_likelihoods.entry(category.clone()).or_insert(0.0);
+                *likelihood += 1.0;
+            }
+        }
+    }
+
+    // Calculate the likelihood for each category
+    for (category, count) in category_recommendation_likelihoods.iter_mut() {
+        if let Some(node_count) = category_node_counts.get(category) {
+            *count /= *node_count as f64;
+        }
+    }
+
+    category_recommendation_likelihoods
+}

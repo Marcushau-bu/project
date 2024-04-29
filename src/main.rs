@@ -49,6 +49,15 @@ fn main() -> io::Result<()>  {
         }
         println!("\n");
 
+        // Likelihood Calculation 
+        let category_likelihood = graph_analysis::category_recommendation_likelihood(&graph, &node_dictionary);
+        println!("Likelihood of each category recommending its own category:");
+        for (category, likelihood) in category_likelihood.iter() {
+            println!("Category: {} - Likelihood: {}", category, likelihood);
+        }
+        println!("\n");
+
+
         
         Ok(())
 }
