@@ -102,3 +102,36 @@ pub fn category_recommendation_likelihood(graph: &HashMap<String, Vec<String>>, 
 
     category_recommendation_likelihoods
 }
+
+pub fn average_recommendation_per_category(
+    graph: &HashMap<String, Vec<String>>, 
+    node_info: &HashMap<String, (String, String)>
+) -> HashMap<String, HashMap<String, f64>> {
+    let mut category_counts: HashMap<String, HashMap<String, usize>> = HashMap::new();
+    let mut category_totals: HashMap<String, usize> = HashMap::new();
+
+    // Step 1: Collect recommendations for each node.
+    for (node, neighbors) in graph.iter() {
+        if let Some((_, node_category)) = node_info.get(node) {
+            let counts = category_counts.entry(node_category.clone()).or_insert_with(HashMap::new);
+            for neighbor in neighbors {
+                if let Some((_, neighbor_category)) = node_info.get(neighbor) {
+                    *counts.entry(neighbor_category.clone()).or_insert(0) += 1;
+                }
+            }
+            *category_totals.entry(node_category.clone()).or_insert(0) += 1;
+        }
+    }
+
+    // Step 2: Compute averages for each category.
+    let mut averages: HashMap<String, HashMap<String, f64>> = HashMap::new();
+    for (category, counts) in category_counts {
+        let total_nodes = category_totals.get(&category).unwrap_or(&1); // Avoid division by zero
+        let avg_counts: HashMap<String, f64> = counts.into_iter()
+            .map(|(cat, count)| (cat, count as f64 / *total_nodes as f64))
+            .collect();
+        averages.insert(category, avg_counts);
+    }
+
+    averages
+}

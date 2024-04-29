@@ -49,7 +49,7 @@ fn main() -> io::Result<()>  {
         }
         println!("\n");
 
-        // Likelihood Calculation 
+        // Calculate the likelihood of someone purchasing a product of the same category for each category 
         let category_likelihood = graph_analysis::category_recommendation_likelihood(&graph, &node_dictionary);
         println!("Likelihood of each category recommending its own category:");
         for (category, likelihood) in category_likelihood.iter() {
@@ -57,7 +57,16 @@ fn main() -> io::Result<()>  {
         }
         println!("\n");
 
-
+        // The average number of other items in each category a person purcahses along their initial item
+        let average_recommendations = graph_analysis::average_recommendation_per_category(&graph, &node_dictionary);
+        println!("Average Recommendations per Category:");
+        for (category, avg_recs) in average_recommendations.iter() {
+            println!("Category: {}", category);
+            for (rec_category, avg) in avg_recs.iter() {
+                println!("  Recommends {}: {:.2}", rec_category, avg);
+            }
+        }
+        println!("\n");
         
         Ok(())
 }
