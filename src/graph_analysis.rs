@@ -1,5 +1,4 @@
 // graph_analysis.rs
-use std::collections::HashSet;
 use std::collections::HashMap;
 
 // Calculate average degree centrality for each category for all nodes
@@ -25,7 +24,6 @@ pub fn compute_average_degree_centrality_all_nodes(
         let average_degree = *total_degree as f64 / *node_count as f64;
         average_degrees.insert(category.clone(), average_degree);
     }
-
     average_degrees
 }
 
@@ -55,37 +53,8 @@ pub fn compute_average_degree_centrality_for_nodes_with_neighbours(
         let average_degree = *total_degree as f64 / *node_count as f64;
         average_degrees.insert(category.clone(), average_degree);
     }
-
     average_degrees
 }
-
-// pub fn category_purchasing_likelihood(graph: &HashMap<String, Vec<String>>, node_info: &HashMap<String, (String, String)>) -> HashMap<String, f64> {
-//     let mut category_purchasing_likelihoods: HashMap<String, f64> = HashMap::new();
-//     let mut category_total_connections: HashMap<String, usize> = HashMap::new();
-
-//     for (node, neighbors) in graph.iter() {
-//         if let Some((_, category)) = node_info.get(node) {
-//             let connections = category_total_connections.entry(category.clone()).or_insert(0);
-//             *connections += neighbors.len();
-
-//             for neighbor in neighbors {
-//                 if let Some((_, neighbor_category)) = node_info.get(neighbor) {
-//                     if category == neighbor_category {
-//                         let likelihood = category_purchasing_likelihoods.entry(category.clone()).or_insert(0.0);
-//                         *likelihood += 1.0;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-
-//     for (category, likelihood) in category_purchasing_likelihoods.iter_mut() {
-//         if let Some(total_connections) = category_total_connections.get(category) {
-//             *likelihood /= *total_connections as f64;
-//         }
-//     }
-//     category_purchasing_likelihoods
-// }
 
 pub fn category_purchasing_likelihood(graph: &HashMap<String, Vec<String>>, node_info: &HashMap<String, (String, String)>) -> HashMap<String, f64> {
     let mut category_purchasing_likelihoods: HashMap<String, f64> = HashMap::new();
@@ -122,7 +91,6 @@ pub fn category_purchasing_likelihood(graph: &HashMap<String, Vec<String>>, node
             *likelihood /= *total_connections as f64;
         }
     }
-
     category_purchasing_likelihoods
 }
 
@@ -155,6 +123,5 @@ pub fn average_co_purchases_per_category(
             .collect();
         averages.insert(category, avg_counts);
     }
-
     averages
 }

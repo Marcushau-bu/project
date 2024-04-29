@@ -81,5 +81,6 @@ pub fn test_category_purchasing_likelihood() {
 
 pub fn run_tests() {
     test_compute_average_degree_centrality_all_nodes();
+    println!("\n");
     test_category_purchasing_likelihood();
 }

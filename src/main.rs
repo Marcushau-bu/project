@@ -68,12 +68,9 @@ fn main() -> io::Result<()>  {
         }
         println!("\n");
 
-
         // Tests
         println!("Tests: correct solution to prove the function works included in comments in test module");
         test::run_tests();
 
-
-        
         Ok(())
 }
