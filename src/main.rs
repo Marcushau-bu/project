@@ -1,4 +1,5 @@
 mod data_processing;
+mod graph_analysis;
 use std::io;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -31,7 +32,23 @@ fn main() -> io::Result<()>  {
             new_graph.insert(node.clone(), graph[node].clone());
             new_node_dictionary.insert(node.clone(), node_dictionary[node].clone());
         }
-    
+        
+        // Print out average degree centrality for each category for all nodes
+        println!("Avg Degree Centrality for each category");
+        let average_degree_centrality_allnodes = graph_analysis::compute_average_degree_centrality_all_nodes(&new_graph, &new_node_dictionary);
+        for (category, avg_degree) in average_degree_centrality_allnodes.iter() {
+            println!("Category: {} - Average Degree Centrality: {}", category, avg_degree);
+        }
+        println!("\n");
+
+        // Print out average degree centrality for each category for only nodes with neighbors
+        println!("Avg Degree Centrality for each category based only on nodes with neighbours");
+        let average_degree_centrality_for_nodes_with_neighbours = graph_analysis::compute_average_degree_centrality_for_nodes_with_neighbours(&new_graph, &new_node_dictionary);
+        for (category, avg_degree) in average_degree_centrality_for_nodes_with_neighbours.iter() {
+            println!("Category: {} - Average Degree Centrality: {}", category, avg_degree);
+        }
+        println!("\n");
+
         
         Ok(())
 }
