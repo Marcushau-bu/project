@@ -59,44 +59,67 @@ pub fn compute_average_degree_centrality_for_nodes_with_neighbours(
     average_degrees
 }
 
+// pub fn category_purchasing_likelihood(graph: &HashMap<String, Vec<String>>, node_info: &HashMap<String, (String, String)>) -> HashMap<String, f64> {
+//     let mut category_purchasing_likelihoods: HashMap<String, f64> = HashMap::new();
+//     let mut category_total_connections: HashMap<String, usize> = HashMap::new();
+
+//     for (node, neighbors) in graph.iter() {
+//         if let Some((_, category)) = node_info.get(node) {
+//             let connections = category_total_connections.entry(category.clone()).or_insert(0);
+//             *connections += neighbors.len();
+
+//             for neighbor in neighbors {
+//                 if let Some((_, neighbor_category)) = node_info.get(neighbor) {
+//                     if category == neighbor_category {
+//                         let likelihood = category_purchasing_likelihoods.entry(category.clone()).or_insert(0.0);
+//                         *likelihood += 1.0;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+
+//     for (category, likelihood) in category_purchasing_likelihoods.iter_mut() {
+//         if let Some(total_connections) = category_total_connections.get(category) {
+//             *likelihood /= *total_connections as f64;
+//         }
+//     }
+//     category_purchasing_likelihoods
+// }
+
 pub fn category_purchasing_likelihood(graph: &HashMap<String, Vec<String>>, node_info: &HashMap<String, (String, String)>) -> HashMap<String, f64> {
     let mut category_purchasing_likelihoods: HashMap<String, f64> = HashMap::new();
+    let mut category_total_connections: HashMap<String, usize> = HashMap::new();
 
-    // HashMap to store the count of nodes in each category
-    let mut category_node_counts: HashMap<String, usize> = HashMap::new();
+    // Initialize the counters for all categories to ensure each is represented in the final map
+    for (_, (_, category)) in node_info.iter() {
+        category_purchasing_likelihoods.entry(category.clone()).or_insert(0.0);
+        category_total_connections.entry(category.clone()).or_insert(0);
+    }
 
-    // Iterate through each node in the graph
+    // Iterate through each node and their neighbors
     for (node, neighbors) in graph.iter() {
-        // Get the category of the current node
         if let Some((_, category)) = node_info.get(node) {
-            // Increment the count of nodes in the current category
-            let count = category_node_counts.entry(category.clone()).or_insert(0);
-            *count += 1;
+            // Update the total connections for this category
+            let connections = category_total_connections.entry(category.clone()).or_insert(0);
+            *connections += neighbors.len();
 
-            // Create a HashSet to store the neighbors' categories
-            let mut neighbor_categories: HashSet<String> = HashSet::new();
-            
-            // Iterate through each neighbor of the current node
+            // Check for co-purchases within the same category
             for neighbor in neighbors {
-                // Get the category of the neighbor node
                 if let Some((_, neighbor_category)) = node_info.get(neighbor) {
-                    // Add the neighbor's category to the HashSet
-                    neighbor_categories.insert(neighbor_category.clone());
+                    if category == neighbor_category {
+                        let likelihood = category_purchasing_likelihoods.entry(category.clone()).or_insert(0.0);
+                        *likelihood += 1.0;
+                    }
                 }
-            }
-
-            // Increment the likelihood for the current category if it occurs in the neighbors' categories
-            if neighbor_categories.contains(category) {
-                let likelihood = category_purchasing_likelihoods.entry(category.clone()).or_insert(0.0);
-                *likelihood += 1.0;
             }
         }
     }
 
-    // Calculate the likelihood for each category
-    for (category, count) in category_purchasing_likelihoods.iter_mut() {
-        if let Some(node_count) = category_node_counts.get(category) {
-            *count /= *node_count as f64;
+    // Calculate the final likelihood by dividing the co-purchase count by the total connections
+    for (category, likelihood) in category_purchasing_likelihoods.iter_mut() {
+        if let Some(total_connections) = category_total_connections.get(category) {
+            *likelihood /= *total_connections as f64;
         }
     }
 

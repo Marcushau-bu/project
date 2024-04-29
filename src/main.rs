@@ -1,5 +1,6 @@
 mod data_processing;
 mod graph_analysis;
+mod test;
 use std::io;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -66,6 +67,13 @@ fn main() -> io::Result<()>  {
             }
         }
         println!("\n");
+
+
+        // Tests
+        println!("Tests: correct solution to prove the function works included in comments in test module");
+        test::run_tests();
+
+
         
         Ok(())
 }
