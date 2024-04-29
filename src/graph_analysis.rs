@@ -110,7 +110,7 @@ pub fn average_recommendation_per_category(
     let mut category_counts: HashMap<String, HashMap<String, usize>> = HashMap::new();
     let mut category_totals: HashMap<String, usize> = HashMap::new();
 
-    // Step 1: Collect recommendations for each node.
+    // Collect recommendations for each node.
     for (node, neighbors) in graph.iter() {
         if let Some((_, node_category)) = node_info.get(node) {
             let counts = category_counts.entry(node_category.clone()).or_insert_with(HashMap::new);
@@ -123,7 +123,7 @@ pub fn average_recommendation_per_category(
         }
     }
 
-    // Step 2: Compute averages for each category.
+    // Compute averages for each category.
     let mut averages: HashMap<String, HashMap<String, f64>> = HashMap::new();
     for (category, counts) in category_counts {
         let total_nodes = category_totals.get(&category).unwrap_or(&1); // Avoid division by zero
