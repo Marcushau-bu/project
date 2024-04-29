@@ -37,7 +37,7 @@ pub fn test_compute_average_degree_centrality_all_nodes() {
 
     println!("Average Degree Centrality:");
     for (node, centrality_value) in centrality.iter() {
-        println!("Cateogry {}: {:.2}", node, centrality_value);
+        println!("Category {}: {:.2}", node, centrality_value);
     }
 }
 
@@ -73,9 +73,9 @@ pub fn test_category_purchasing_likelihood() {
     // Testing category purchasing likelihood function
     let likelihood = category_purchasing_likelihood(&graph, &node_info);
 
-    println!("Category puchasing likihood:");
+    println!("Category puchasing likelihood:");
     for (node, likelihood_value) in likelihood.iter() {
-        println!("Cateogry {}: {:.2}", node, likelihood_value);
+        println!("Category {}: {:.2}", node, likelihood_value);
     }
 }
 
